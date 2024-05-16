@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.PlatformTransactionManager;
+import study.batchpractice.Tasks.LottoCountCheckTasklet;
 
 @Slf4j
 @Configuration
@@ -29,24 +30,19 @@ public class BatchConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final LottoCountCheckTasklet lottoCountCheckTasklet;
 
     @Bean
     public Job simpleJob() {
         return jobBuilderFactory.get("simpleJob")
-                .start(simpleStep1())
+                .start(lottoTargetDateCountCheck())
                 .build();
     }
 
     @Bean
     @JobScope // batch 실행 동안에만 생성
-    public Step simpleStep1() {
-        return stepBuilderFactory.get("simpleStep1")
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(">>>>> This is Step1");
-//                    log.info(">>>>> requestDate = {}", requestDate);
-                    return RepeatStatus.FINISHED;
-                })
-                .build();
+    public Step lottoTargetDateCountCheck() {
+        return stepBuilderFactory.get("lottoTargetDateCountCheck").tasklet(lottoCountCheckTasklet).build();
     }
 
 

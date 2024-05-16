@@ -1,4 +1,4 @@
-package study.batchpractice.configure.entities;
+package study.batchpractice.entities;
 
 import lombok.AccessLevel;
 import lombok.Getter;
