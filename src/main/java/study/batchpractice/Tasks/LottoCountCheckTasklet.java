@@ -29,6 +29,7 @@ public class LottoCountCheckTasklet implements Tasklet {
             stepContribution.setExitStatus(ExitStatus.COMPLETED);
             return RepeatStatus.FINISHED;
         }
+
         return RepeatStatus.CONTINUABLE;
     }
 }
