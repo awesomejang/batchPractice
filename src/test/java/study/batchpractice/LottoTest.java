@@ -9,10 +9,10 @@ import study.batchpractice.Tasks.LottoCountCheckTasklet;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Random;
 
 @Transactional
 @SpringBootTest
-
 public class LottoTest {
 
     @Autowired
@@ -22,5 +22,12 @@ public class LottoTest {
     public void makeSaturdayDate() {
         LocalDate now = LocalDate.now();
         System.out.println("now = " + now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)));
+    }
+
+    @Test
+    public void createLottoNumbers() {
+        Random random = new Random();
+        int i = random.nextInt(12);
+        System.out.println("i = " + i);
     }
 }
