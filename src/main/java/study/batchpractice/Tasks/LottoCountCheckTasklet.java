@@ -24,11 +24,13 @@ public class LottoCountCheckTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
         log.info(">>>>> This is LottoCountCheckTasklet");
+        System.out.println("??????????????");
         int count = lottoRepository.countByTargetDate(LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)));
         if(count >= 10) {
             stepContribution.setExitStatus(ExitStatus.COMPLETED);
             return RepeatStatus.FINISHED;
         }
-        return RepeatStatus.CONTINUABLE;
+//        return RepeatStatus.CONTINUABLE;
+        return RepeatStatus.FINISHED;
     }
 }
