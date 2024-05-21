@@ -44,15 +44,17 @@ public class BatchConfiguration {
     @Bean
     public Job simpleJob() {
         return jobBuilderFactory.get("createLottoNumbersJob")
-                .start(lottoTargetDateCountCheck(null))
+                .start(lottoTargetDateCountCheck())
                 .listener(new CustomJobExecutionListener())
                 .build();
     }
 
     @Bean
     @JobScope
-    public Step lottoTargetDateCountCheck(@Value("#{jobParameters['time']}") String time) {
-        log.debug("time -> {}", time);
+    public Step lottoTargetDateCountCheck(
+//            @Value("#{jobParameters['time']}") String time
+    ) {
+//        log.debug("time -> {}", time);
         return stepBuilderFactory.get("lottoTargetDateCountCheck").tasklet(lottoCountCheckTasklet).build();
     }
 
