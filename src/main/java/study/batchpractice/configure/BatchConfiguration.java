@@ -3,27 +3,16 @@ package study.batchpractice.configure;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-//import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.PlatformTransactionManager;
+import study.batchpractice.Tasks.CreateLottoNumberTasklet;
+import study.batchpractice.Tasks.CreateLottoTasklet;
 import study.batchpractice.Tasks.LottoCountCheckTasklet;
 
 @Slf4j
@@ -34,6 +23,8 @@ public class BatchConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final LottoCountCheckTasklet lottoCountCheckTasklet;
+    private final CreateLottoNumberTasklet createLottoNumberTasklet;
+    private final CreateLottoTasklet createLottoTasklet;
     private final JobLauncher jobLauncher;
 
 //    public void runJob() throws Exception {
@@ -44,7 +35,9 @@ public class BatchConfiguration {
     @Bean
     public Job simpleJob() {
         return jobBuilderFactory.get("createLottoNumbersJob")
-                .start(lottoTargetDateCountCheck())
+                .start(lottoTargetDateCountCheck(null))
+                .next(createLottoNumberStep())
+                .next(createLottoStep())
                 .listener(new CustomJobExecutionListener())
                 .build();
     }
@@ -52,11 +45,23 @@ public class BatchConfiguration {
     @Bean
     @JobScope
     public Step lottoTargetDateCountCheck(
-//            @Value("#{jobParameters['time']}") String time
+            @Value("#{jobParameters['time']}") String time
     ) {
-//        log.debug("time -> {}", time);
+        log.debug("time -> {}", time);
         return stepBuilderFactory.get("lottoTargetDateCountCheck").tasklet(lottoCountCheckTasklet).build();
     }
+
+    @Bean
+    public Step createLottoNumberStep() {
+        return stepBuilderFactory.get("createLottoNumberStep").tasklet(createLottoNumberTasklet).build();
+    }
+
+    @Bean
+    public Step createLottoStep() {
+        return stepBuilderFactory.get("createLottoStep").tasklet(createLottoTasklet).build();
+    }
+
+
 
 
 //    @Autowired @Deprecated
