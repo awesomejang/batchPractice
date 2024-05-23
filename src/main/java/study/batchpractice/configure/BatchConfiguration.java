@@ -35,6 +35,7 @@ public class BatchConfiguration {
     @Bean
     public Job simpleJob() {
         return jobBuilderFactory.get("createLottoNumbersJob")
+                .preventRestart()
                 .start(lottoTargetDateCountCheck(null))
                 .next(createLottoNumberStep())
                 .next(createLottoStep())
