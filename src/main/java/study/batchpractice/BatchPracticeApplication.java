@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableBatchProcessing
-public class BatchPracticeApplication implements CommandLineRunner {
+public class BatchPracticeApplication
+//        implements CommandLineRunner
+{
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -29,9 +31,9 @@ public class BatchPracticeApplication implements CommandLineRunner {
     }
 
 
-    @Override
-    public void run(String... args) throws Exception {
-        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
-        jobLauncher.run(simpleJob, params);
-    }
+//    @Override
+//    public void run(String... args) throws Exception {
+//        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
+//        jobLauncher.run(simpleJob, params);
+//    }
 }
