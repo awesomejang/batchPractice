@@ -24,16 +24,15 @@ public class BatchPracticeApplication
     private JobLauncher jobLauncher;
 
     @Autowired
-    private Job simpleJob;
+    private Job job;
 
     public static void main(String[] args) {
         SpringApplication.run(BatchPracticeApplication.class, args);
     }
 
-
 //    @Override
 //    public void run(String... args) throws Exception {
 //        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
-//        jobLauncher.run(simpleJob, params);
+//        jobLauncher.run(job, params);
 //    }
 }
