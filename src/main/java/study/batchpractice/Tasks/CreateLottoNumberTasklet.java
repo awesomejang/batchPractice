@@ -37,7 +37,7 @@ public class CreateLottoNumberTasklet implements Tasklet {
             int number = random.nextInt(45) + 1;
             numbers.add(number);
         }
-        return numbers.stream().map(String::valueOf).collect(Collectors.joining(","));
+        return numbers.stream().sorted().map(String::valueOf).collect(Collectors.joining(","));
     }
 }
 

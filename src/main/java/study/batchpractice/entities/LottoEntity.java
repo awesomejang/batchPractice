@@ -11,9 +11,15 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "lotto")
+@Table(name = "lottos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LottoEntity extends BaseEntity {
+public class LottoEntity extends BaseTimeEntity {
+
+    public LottoEntity(String lottoNumbers, LocalDate targetDate) {
+        this.lottoNumbers = lottoNumbers;
+        this.targetDate = targetDate;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

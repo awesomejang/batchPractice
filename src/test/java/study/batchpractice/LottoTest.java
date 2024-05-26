@@ -35,6 +35,7 @@ public class LottoTest {
             int number = random.nextInt(45) + 1;
             numbers.add(number);
         }
+
         Assertions.assertThat(numbers.size()).isEqualTo(6);
         Assertions.assertThat(numbers).allMatch(number -> number >= 1 && number <= 45);
     }

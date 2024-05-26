@@ -7,7 +7,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,23 +18,21 @@ import study.batchpractice.Tasks.LottoCountCheckTasklet;
 @Configuration // deprecated to 5.x
 @RequiredArgsConstructor
 public class BatchConfiguration {
-
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final LottoCountCheckTasklet lottoCountCheckTasklet;
     private final CreateLottoNumberTasklet createLottoNumberTasklet;
     private final CreateLottoTasklet createLottoTasklet;
-    private final JobLauncher jobLauncher;
 
 //    public void runJob() throws Exception {
 //        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
 //        jobLauncher.run(simpleJob(), jobParameters);
 //    }
 
-    @Bean
-    public Job simpleJob() {
+    @Bean(name = "createLottoJob")
+    public Job createLottoJob() {
         return jobBuilderFactory.get("createLottoNumbersJob")
-                .preventRestart()
+//                .preventRestart()
                 .start(lottoTargetDateCountCheck(null))
                 .next(createLottoNumberStep())
                 .next(createLottoStep())
