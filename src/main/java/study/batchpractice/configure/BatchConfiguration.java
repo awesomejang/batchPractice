@@ -7,12 +7,22 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.database.JpaCursorItemReader;
+import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import study.batchpractice.Tasks.CreateLottoNumberTasklet;
 import study.batchpractice.Tasks.CreateLottoTasklet;
 import study.batchpractice.Tasks.LottoCountCheckTasklet;
+import study.batchpractice.entities.LottoEntity;
+
+import javax.batch.api.chunk.ItemReader;
+import javax.persistence.EntityManagerFactory;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Configuration // deprecated to 5.x
@@ -23,6 +33,8 @@ public class BatchConfiguration {
     private final LottoCountCheckTasklet lottoCountCheckTasklet;
     private final CreateLottoNumberTasklet createLottoNumberTasklet;
     private final CreateLottoTasklet createLottoTasklet;
+
+    private final EntityManagerFactory entityManagerFactory;
 
 //    public void runJob() throws Exception {
 //        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
@@ -59,27 +71,14 @@ public class BatchConfiguration {
         return stepBuilderFactory.get("createLottoStep").tasklet(createLottoTasklet).build();
     }
 
-
-
-
-//    @Autowired @Deprecated
-//    private final JobBuilderFactory jobBuilderFactory;
-
-//    @Bean
-//    public Job simpleJob(JobRepository jobRepository, Tasklet testTasklet, PlatformTransactionManager platformTransactionManager) {
-//        return new JobBuilder("simpleJob", jobRepository).start(simpleStep1(jobRepository, testTasklet, platformTransactionManager)).build();
-//    }
-//
-//    @Bean
-//    public Step simpleStep1(JobRepository jobRepository, Tasklet testTasklet, PlatformTransactionManager platformTransactionManager){
-//        return new StepBuilder("simpleStep1", jobRepository)
-//                .tasklet(testTasklet, platformTransactionManager).build();
-//    }
-//    @Bean
-//    public Tasklet testTasklet(){
-//        return ((contribution, chunkContext) -> {
-//            log.info(">>>>> This is Step1");
-//            return RepeatStatus.FINISHED;
-//        });
-//    }
+    // ItemReader 종류 상당히 많다. 상황에 맞는것을 선택해서 사용
+    @Bean
+    public JpaCursorItemReader<LottoEntity> JpaCursorItemReaderBuilder() {
+        return new JpaCursorItemReaderBuilder<LottoEntity>()
+                .name("lottoItemReader")
+                .entityManagerFactory(entityManagerFactory)
+                .queryString("SELECT le FROM LottoEntity le where le.targetDate = :targetDate")
+                .parameterValues(Map.of("targetDate", LocalDate.now()))
+                .build();
+    }
 }
