@@ -17,6 +17,7 @@ import study.batchpractice.Tasks.CreateLottoNumberTasklet;
 import study.batchpractice.Tasks.CreateLottoTasklet;
 import study.batchpractice.Tasks.LottoCountCheckTasklet;
 import study.batchpractice.entities.LottoEntity;
+import study.batchpractice.reader.LottoItemReader;
 
 import javax.batch.api.chunk.ItemReader;
 import javax.persistence.EntityManagerFactory;
@@ -40,6 +41,11 @@ public class BatchConfiguration {
 //        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
 //        jobLauncher.run(simpleJob(), jobParameters);
 //    }
+
+    @Bean
+    public JpaCursorItemReader<LottoEntity> lottoItemReader() {
+        return new LottoItemReader(entityManagerFactory).build(LocalDate.now());
+    }
 
     @Bean(name = "createLottoJob")
     public Job createLottoJob() {
@@ -72,13 +78,13 @@ public class BatchConfiguration {
     }
 
     // ItemReader 종류 상당히 많다. 상황에 맞는것을 선택해서 사용
-    @Bean
-    public JpaCursorItemReader<LottoEntity> JpaCursorItemReaderBuilder() {
-        return new JpaCursorItemReaderBuilder<LottoEntity>()
-                .name("lottoItemReader")
-                .entityManagerFactory(entityManagerFactory)
-                .queryString("SELECT le FROM LottoEntity le where le.targetDate = :targetDate")
-                .parameterValues(Map.of("targetDate", LocalDate.now()))
-                .build();
-    }
+//    @Bean
+//    public JpaCursorItemReader<LottoEntity> JpaCursorItemReaderBuilder(LocalDate localDate) {
+//        return new JpaCursorItemReaderBuilder<LottoEntity>()
+//                .name("lottoItemReader")
+//                .entityManagerFactory(entityManagerFactory)
+//                .queryString("SELECT le FROM LottoEntity le where le.targetDate = :targetDate")
+//                .parameterValues(Map.of("targetDate", LocalDate.now()))
+//                .build();
+//    }
 }
