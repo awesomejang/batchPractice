@@ -24,20 +24,17 @@ import java.util.Map;
 //@RequiredArgsConstructor
 public class LottoItemReader implements ItemReader<List<LottoEntity>> {
 
-    private final EntityManager entityManager;
     private final LottoRepository lottoRepository;
     private final LocalDate localDate;
 
-    public LottoItemReader(EntityManager entityManager, LottoRepository lottoRepository, LocalDate localDate) {
-        this.entityManager = entityManager;
+    public LottoItemReader(LottoRepository lottoRepository, LocalDate localDate) {
         this.lottoRepository = lottoRepository;
         this.localDate = localDate;
     }
 
     @Override
     public List<LottoEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-//        lottoRepository.find
-        return List.of();
+        return lottoRepository.findByTargetDate(this.localDate);
     }
 
 

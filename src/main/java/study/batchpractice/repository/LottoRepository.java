@@ -6,9 +6,12 @@ import org.springframework.stereotype.Repository;
 import study.batchpractice.entities.LottoEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface LottoRepository extends CrudRepository<LottoEntity, Long> {
 
     int countByTargetDate(LocalDate targetDate);
+
+    List<LottoEntity> findByTargetDate(LocalDate targetDate);
 }
