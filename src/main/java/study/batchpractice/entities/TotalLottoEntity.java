@@ -1,10 +1,14 @@
 package study.batchpractice.entities;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "total_lottos")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TotalLottoEntity extends BaseTimeEntity {
 
     @Id
@@ -17,4 +21,8 @@ public class TotalLottoEntity extends BaseTimeEntity {
     @Column(name = "target_date", columnDefinition = "DATE")
     private LocalDate targetDate;
 
+    public TotalLottoEntity(String totalLottoNumbers, LocalDate targetDate) {
+        this.totalLottoNumbers = totalLottoNumbers;
+        this.targetDate = targetDate;
+    }
 }
