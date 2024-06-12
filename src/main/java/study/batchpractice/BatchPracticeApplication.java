@@ -19,12 +19,11 @@ import java.time.LocalDateTime;
 public class BatchPracticeApplication
 //        implements CommandLineRunner
 {
-
     @Autowired
     private JobLauncher jobLauncher;
 
-    @Autowired
-    private Job job;
+//    @Autowired
+//    private Job job;
 
     public static void main(String[] args) {
         SpringApplication.run(BatchPracticeApplication.class, args);
