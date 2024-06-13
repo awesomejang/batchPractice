@@ -25,6 +25,7 @@ public class LottoItemReader implements ItemReader<List<LottoEntity>> {
 
     @Override
     public List<LottoEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+        log.info(">>>>> This is LottoItemReader");
         return lottoRepository.findByTargetDate(this.localDate);
     }
 
