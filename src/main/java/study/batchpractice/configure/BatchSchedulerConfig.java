@@ -21,7 +21,7 @@ public class BatchSchedulerConfig {
     private final JobLauncher jobLauncher;
     private final Job createLottoJob;
 
-    @Scheduled(cron = "*/3 * * * * *")
+//    @Scheduled(cron = "*/3 * * * * *")
     public void runBatchJob() throws Exception {
         log.info(">>>>> JOB SCHEDULER START");
         JobParameters time = new JobParametersBuilder()
