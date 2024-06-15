@@ -16,22 +16,21 @@ import java.time.LocalDateTime;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableBatchProcessing
-public class BatchPracticeApplication
-//        implements CommandLineRunner
+public class BatchPracticeApplication implements CommandLineRunner
 {
     @Autowired
     private JobLauncher jobLauncher;
 
-//    @Autowired
-//    private Job job;
+    @Autowired
+    private Job createTotalLottoJob;
 
     public static void main(String[] args) {
         SpringApplication.run(BatchPracticeApplication.class, args);
     }
 
-//    @Override
-//    public void run(String... args) throws Exception {
-//        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
-//        jobLauncher.run(job, params);
-//    }
+    @Override
+    public void run(String... args) throws Exception {
+        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
+        jobLauncher.run(createTotalLottoJob, params);
+    }
 }
