@@ -17,6 +17,7 @@ public class LottoItemReader implements ItemReader<List<LottoEntity>> {
 
     private final LottoRepository lottoRepository;
     private final LocalDate localDate;
+    private boolean read = false;
 
     public LottoItemReader(LottoRepository lottoRepository, LocalDate localDate) {
         this.lottoRepository = lottoRepository;
@@ -26,7 +27,13 @@ public class LottoItemReader implements ItemReader<List<LottoEntity>> {
     @Override
     public List<LottoEntity> read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
         log.info(">>>>> This is LottoItemReader");
-        return lottoRepository.findByTargetDate(this.localDate);
+        if (!read) {
+            read = true;
+            return lottoRepository.findByTargetDate(this.localDate);
+        }else {
+            return null;
+        }
+//        return lottoRepository.findByTargetDate(this.localDate);
     }
 
 
