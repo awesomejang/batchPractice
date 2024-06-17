@@ -21,8 +21,11 @@ public class BatchPracticeApplication implements CommandLineRunner
     @Autowired
     private JobLauncher jobLauncher;
 
+//    @Autowired
+//    private Job createTotalLottoJob;
+
     @Autowired
-    private Job createTotalLottoJob;
+    private Job createLottoJob;
 
     public static void main(String[] args) {
         SpringApplication.run(BatchPracticeApplication.class, args);
@@ -30,7 +33,7 @@ public class BatchPracticeApplication implements CommandLineRunner
 
     @Override
     public void run(String... args) throws Exception {
-        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
-        jobLauncher.run(createTotalLottoJob, params);
+//        JobParameters params = new JobParametersBuilder().addString("time", String.valueOf(LocalDateTime.now())).toJobParameters();
+//        jobLauncher.run(createLottoJob, params);
     }
 }
