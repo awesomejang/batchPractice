@@ -27,6 +27,9 @@ public class BatchPracticeApplication implements CommandLineRunner
     @Autowired
     private Job createLottoJob;
 
+    @Autowired
+    private Job createLottoJob;
+
     public static void main(String[] args) {
         SpringApplication.run(BatchPracticeApplication.class, args);
     }

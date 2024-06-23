@@ -11,6 +11,7 @@ import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JpaCursorItemReader;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ public class BatchConfiguration {
     private final LottoCountCheckTasklet lottoCountCheckTasklet;
     private final CreateLottoNumberTasklet createLottoNumberTasklet;
     private final CreateLottoTasklet createLottoTasklet;
+    private final JpaPagingItemReader<LottoEntity> lottoJpaPagingItemReader;
 
     private final EntityManagerFactory entityManagerFactory;
 
@@ -71,8 +73,9 @@ public class BatchConfiguration {
 
     public Step totalLottoCreateStep() {
         return stepBuilderFactory.get("totalLottoCreateStep")
-                .<List<LottoEntity>, TotalLottoEntity>chunk(1)
-                .reader(new LottoItemReader(lottoRepository, LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))))
+                .<LottoEntity, TotalLottoEntity>chunk(1)
+//                .reader(new LottoItemReader(lottoRepository, LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))))
+                .reader(lottoJpaPagingItemReader)
                 .processor(new LottoItemProcessor(LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))))
                 .writer(new TotalLottoItemWriter(totalLottoRepository))
                 .build();
