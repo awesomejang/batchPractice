@@ -15,23 +15,32 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LottoItemProcessor implements ItemProcessor<List<LottoEntity>, TotalLottoEntity> {
+public class LottoItemProcessor implements ItemProcessor<LottoEntity, String> {
 
     private final LocalDate targetDate;
 
-    @Override
-    public TotalLottoEntity process(List<LottoEntity> lottoEntities) throws Exception {
-        log.info(">>>>> This is LottoItemProcessor");
-        log.info(">>>>> lottoEntitiesSize = {}", lottoEntities.size());
-        ObjectMapper objectMapper = new ObjectMapper();
-        ArrayNode arrayNode = objectMapper.createArrayNode();
-        for (int i = 0; i < lottoEntities.size(); i++) {
-            ObjectNode objectNode = objectMapper.createObjectNode();
-            objectNode.put(String.valueOf(i + 1), lottoEntities.get(i).getLottoNumbers());
-            arrayNode.add(objectNode);
-        }
-        String lottoNumberJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(arrayNode);
+//    @Override
+//    public LottoEntity process(LottoEntity lottoEntity) throws Exception {
+//        log.info(">>>>> This is LottoItemProcessor");
+//        log.info(">>>>> lottoNumber = {}", lottoEntity.getLottoNumbers());
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        ArrayNode arrayNode = objectMapper.createArrayNode();
+////        for (int i = 0; i < lottoEntities.size(); i++) {
+////            ObjectNode objectNode = objectMapper.createObjectNode();
+////            objectNode.put(String.valueOf(i + 1), lottoEntities.get(i).getLottoNumbers());
+////            arrayNode.add(objectNode);
+////        }
+//        String lottoNumberJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(arrayNode);
+//
+////        return new TotalLottoEntity(lottoNumberJson, targetDate);
+//        return lottoEntity;
+//    }
 
-        return new TotalLottoEntity(lottoNumberJson, targetDate);
+
+    @Override
+    public String process(LottoEntity lottoEntity) throws Exception {
+        log.info(">>>>> This is LottoItemProcessor");
+        log.info(">>>>> lottoNumber = {}", lottoEntity.getLottoNumbers());
+        return lottoEntity.getLottoNumbers();
     }
 }

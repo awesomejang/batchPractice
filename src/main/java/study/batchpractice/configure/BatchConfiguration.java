@@ -13,16 +13,19 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 import study.batchpractice.Tasks.CreateLottoNumberTasklet;
 import study.batchpractice.Tasks.CreateLottoTasklet;
 import study.batchpractice.Tasks.LottoCountCheckTasklet;
 import study.batchpractice.entities.LottoEntity;
 import study.batchpractice.entities.TotalLottoEntity;
 import study.batchpractice.processor.LottoItemProcessor;
+import study.batchpractice.reader.CompositeItemReader;
 import study.batchpractice.reader.LottoItemReader;
 import study.batchpractice.repository.LottoRepository;
 import study.batchpractice.repository.TotalLottoRepository;
@@ -35,6 +38,7 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Slf4j
 @Configuration // deprecated to 5.x
@@ -45,7 +49,7 @@ public class BatchConfiguration {
     private final LottoCountCheckTasklet lottoCountCheckTasklet;
     private final CreateLottoNumberTasklet createLottoNumberTasklet;
     private final CreateLottoTasklet createLottoTasklet;
-    private final JpaPagingItemReader<LottoEntity> lottoJpaPagingItemReader;
+//    private final JpaPagingItemReader<LottoEntity> lottoJpaPagingItemReader;
 
     private final EntityManagerFactory entityManagerFactory;
 
@@ -62,7 +66,19 @@ public class BatchConfiguration {
 //        return new LottoItemReader(lottoRepository, LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)));
 //    }
 
+    @Bean(name = "lottoJpaPagingItemReader")
+    public JpaPagingItemReader<LottoEntity> createJpaPagingItemReader() {
+        return new JpaPagingItemReaderBuilder<LottoEntity>()
+                .name("lottoJpaPagingItemReader")
+                .entityManagerFactory(entityManagerFactory)
+                .pageSize(10)
+                .queryString("SELECT le FROM LottoEntity le where le.targetDate = :targetDate")
+                .parameterValues(Map.of("targetDate", LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))))
+                .build();
+    }
+
     @Bean(name = "createTotalLottoJob")
+    @Transactional
     public Job createTotalLottoJob() {
         return jobBuilderFactory.get("createTotalLottoJob")
                 .incrementer(new RunIdIncrementer())
@@ -71,11 +87,12 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
     public Step totalLottoCreateStep() {
         return stepBuilderFactory.get("totalLottoCreateStep")
-                .<LottoEntity, TotalLottoEntity>chunk(1)
+                .<LottoEntity, String>chunk(10)
 //                .reader(new LottoItemReader(lottoRepository, LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))))
-                .reader(lottoJpaPagingItemReader)
+                .reader(createJpaPagingItemReader())
                 .processor(new LottoItemProcessor(LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))))
                 .writer(new TotalLottoItemWriter(totalLottoRepository))
                 .build();
