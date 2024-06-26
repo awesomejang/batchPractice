@@ -10,11 +10,8 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,22 +20,16 @@ import study.batchpractice.Tasks.CreateLottoNumberTasklet;
 import study.batchpractice.Tasks.CreateLottoTasklet;
 import study.batchpractice.Tasks.LottoCountCheckTasklet;
 import study.batchpractice.entities.LottoEntity;
-import study.batchpractice.entities.TotalLottoEntity;
 import study.batchpractice.processor.LottoItemProcessor;
-import study.batchpractice.reader.CompositeItemReader;
-import study.batchpractice.reader.LottoItemReader;
 import study.batchpractice.repository.LottoRepository;
 import study.batchpractice.repository.TotalLottoRepository;
 import study.batchpractice.writer.TotalLottoItemWriter;
 
-import javax.batch.api.chunk.ItemReader;
 import javax.persistence.EntityManagerFactory;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 @Slf4j
 @Configuration // deprecated to 5.x
