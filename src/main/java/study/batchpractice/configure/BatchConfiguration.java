@@ -57,6 +57,7 @@ public class BatchConfiguration {
 //        return new LottoItemReader(lottoRepository, LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)));
 //    }
 
+    // TODO: DTO, Map등으로 파라미터 여러개 전달 가능한지 확인
     @Bean(name = "lottoJpaPagingItemReader")
     public JpaPagingItemReader<LottoEntity> createJpaPagingItemReader() {
         return new JpaPagingItemReaderBuilder<LottoEntity>()

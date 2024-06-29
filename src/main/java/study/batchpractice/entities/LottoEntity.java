@@ -29,4 +29,7 @@ public class LottoEntity extends BaseTimeEntity {
 
     @Column(name = "target_date", columnDefinition = "DATE")
     private LocalDate targetDate;
+
+    @Column(name = "use_yn", columnDefinition = "CHAR(1) default 'N'")
+    private String useYn;
 }
