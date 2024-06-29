@@ -6,7 +6,11 @@ import org.springframework.batch.item.ItemWriter;
 import study.batchpractice.entities.TotalLottoEntity;
 import study.batchpractice.repository.TotalLottoRepository;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+
 
 @Slf4j
 public class TotalLottoItemWriter implements ItemWriter<String> {
@@ -22,6 +26,6 @@ public class TotalLottoItemWriter implements ItemWriter<String> {
         log.info(">>>>> This is TotalLottoItemWriter");
         log.info(">>>>> numbers = {}", numbers);
 
-        totalLottoRepository.save(new TotalLottoEntity(new ObjectMapper().writeValueAsString(numbers), null));
+        totalLottoRepository.save(new TotalLottoEntity(new ObjectMapper().writeValueAsString(numbers), LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))));
     }
 }
