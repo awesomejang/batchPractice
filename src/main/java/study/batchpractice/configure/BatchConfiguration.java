@@ -15,6 +15,7 @@ import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilde
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import study.batchpractice.Tasks.CreateLottoNumberTasklet;
 import study.batchpractice.Tasks.CreateLottoTasklet;
@@ -46,7 +47,7 @@ public class BatchConfiguration {
 
     private final LottoRepository lottoRepository;
     private final TotalLottoRepository totalLottoRepository;
-
+    private final PlatformTransactionManager transactionManager;
 //    public void runJob() throws Exception {
 //        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
 //        jobLauncher.run(simpleJob(), jobParameters);
@@ -93,8 +94,10 @@ public class BatchConfiguration {
     @Bean(name = "createLottoJob")
     public Job createLottoJob() {
         return jobBuilderFactory.get("createLottoNumbersJob")
+
 //                .preventRestart()
                 .start(createLottoFlow())
+
                 .end()
                 .listener(new CustomJobExecutionListener())
                 .build();
@@ -114,20 +117,24 @@ public class BatchConfiguration {
     @Bean
     @JobScope
     public Step lottoTargetDateCountCheck(
-            @Value("#{jobParameters['time']}") String time
+            @Value("#{jobParameters['time']}") String time,
+            PlatformTransactionManager transactionManager
     ) {
         log.debug("time -> {}", time);
-        return stepBuilderFactory.get("lottoTargetDateCountCheck").tasklet(lottoCountCheckTasklet).build();
+        return stepBuilderFactory.get("lottoTargetDateCountCheck")
+                .tasklet(lottoCountCheckTasklet)
+                .transactionManager(transactionManager)
+                .build();
     }
 
     @Bean
-    public Step createLottoNumberStep() {
-        return stepBuilderFactory.get("createLottoNumberStep").tasklet(createLottoNumberTasklet).build();
+    public Step createLottoNumberStep(PlatformTransactionManager transactionManager) {
+        return stepBuilderFactory.get("createLottoNumberStep").tasklet(createLottoNumberTasklet).transactionManager(transactionManager).build();
     }
 
     @Bean
-    public Step createLottoStep() {
-        return stepBuilderFactory.get("createLottoStep").tasklet(createLottoTasklet).build();
+    public Step createLottoStep(PlatformTransactionManager transactionManager) {
+        return stepBuilderFactory.get("createLottoStep").tasklet(createLottoTasklet).transactionManager(transactionManager).build();
     }
 
     // ItemReader 종류 상당히 많다. 상황에 맞는것을 선택해서 사용
