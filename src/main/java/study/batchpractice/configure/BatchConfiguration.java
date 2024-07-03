@@ -48,6 +48,7 @@ public class BatchConfiguration {
     private final LottoRepository lottoRepository;
     private final TotalLottoRepository totalLottoRepository;
     private final PlatformTransactionManager transactionManager;
+
 //    public void runJob() throws Exception {
 //        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
 //        jobLauncher.run(simpleJob(), jobParameters);
@@ -106,11 +107,11 @@ public class BatchConfiguration {
     @Bean
     public Flow createLottoFlow() {
         return new FlowBuilder<Flow>("createLottoFlow")
-                .start(lottoTargetDateCountCheck(null))
+                .start(lottoTargetDateCountCheck(null, transactionManager))
                 .on("COUNT_OVER_10").end()
-                .from(lottoTargetDateCountCheck(null))
-                .on("*").to(createLottoNumberStep())
-                .next(createLottoStep())
+                .from(lottoTargetDateCountCheck(null, transactionManager))
+                .on("*").to(createLottoNumberStep(transactionManager))
+                .next(createLottoStep(transactionManager))
                 .build();
     }
 
